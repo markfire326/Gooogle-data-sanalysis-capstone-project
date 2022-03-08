@@ -34,18 +34,18 @@ library(ggplot2)
 ## Uploading 12 csv files for cleaning and analysis
 
 
-apr <- read_csv("C:/Users/George Ogala/Desktop/bikeshare/202004-divvy-tripdata.csv")
-may <- read_csv("C:/Users/George Ogala/Desktop/bikeshare/202005-divvy-tripdata.csv")
-jun <- read_csv("C:/Users/George Ogala/Desktop/bikeshare/202006-divvy-tripdata.csv")
-jul <- read_csv("C:/Users/George Ogala/Desktop/bikeshare/202007-divvy-tripdata.csv")
-aug <- read_csv("C:/Users/George Ogala/Desktop/bikeshare/202008-divvy-tripdata.csv")
-sep <- read_csv("C:/Users/George Ogala/Desktop/bikeshare/202009-divvy-tripdata.csv")
-oct <- read_csv("C:/Users/George Ogala/Desktop/bikeshare/202010-divvy-tripdata.csv")
-nov <- read_csv("C:/Users/George Ogala/Desktop/bikeshare/202011-divvy-tripdata.csv")
-dec <- read_csv("C:/Users/George Ogala/Desktop/bikeshare/202012-divvy-tripdata.csv")
-jan <- read_csv("C:/Users/George Ogala/Desktop/bikeshare/202101-divvy-tripdata.csv")
-feb <- read_csv("C:/Users/George Ogala/Desktop/bikeshare/202102-divvy-tripdata.csv")
-mar <- read_csv("C:/Users/George Ogala/Desktop/bikeshare/202103-divvy-tripdata.csv")
+apr <- read_csv("C:/Users/gee/Desktop/bikeshare/202004-divvy-tripdata.csv")
+may <- read_csv("C:/Users/gee/Desktop/bikeshare/202005-divvy-tripdata.csv")
+jun <- read_csv("C:/Users/gee/Desktop/bikeshare/202006-divvy-tripdata.csv")
+jul <- read_csv("C:/Users/gee/Desktop/bikeshare/202007-divvy-tripdata.csv")
+aug <- read_csv("C:/Users/gee/Desktop/bikeshare/202008-divvy-tripdata.csv")
+sep <- read_csv("C:/Users/gee/Desktop/bikeshare/202009-divvy-tripdata.csv")
+oct <- read_csv("C:/Users/gee/Desktop/bikeshare/202010-divvy-tripdata.csv")
+nov <- read_csv("C:/Users/gee/Desktop/bikeshare/202011-divvy-tripdata.csv")
+dec <- read_csv("C:/Users/gee/Desktop/bikeshare/202012-divvy-tripdata.csv")
+jan <- read_csv("C:/Users/gee/Desktop/bikeshare/202101-divvy-tripdata.csv")
+feb <- read_csv("C:/Users/gee/Desktop/bikeshare/202102-divvy-tripdata.csv")
+mar <- read_csv("C:/Users/gee/Desktop/bikeshare/202103-divvy-tripdata.csv")
 
 
 # STEP 2
@@ -164,7 +164,6 @@ aggregate(trip_length ~ day + member_casual, cleanridedata, mean)
 aggregate(trip_length ~ rideable_type + member_casual, cleanridedata, mean)
 
 
-
 ## Group and visualize data by rider type and monthly trip length
 mc_month <- cleanridedata %>% group_by(month, member_casual) %>%
   count()
@@ -174,7 +173,6 @@ ggplot(data=mc_month)+
   labs(y="Trip length", x="Rider type", fill="Member/Casual",
        title="Ride length by month")+
   theme(axis.text.x=element_text(angle=45))
-
 
 ## Group and visualize rider type by day of the week
 mc_week <- cleanridedata %>% group_by(day, member_casual) %>%
@@ -195,7 +193,6 @@ ggplot(data=mcdata)+
   labs(y="Trip length", x="Rider type", fill="Member/Casual",
        title="Number of trips by different rider types")
 
-
 ## Summarize and visualize data by rider type and average trip length to ascertain lenght of ride taken by different rider types
 trip_len <- cleanridedata %>% group_by(member_casual) %>% summarise(mean_trip_length = mean(trip_length, na.rm = TRUE))
 ggplot(data=trip_len)+
@@ -203,15 +200,13 @@ ggplot(data=trip_len)+
   labs(y="Trip length", x="Rider type", fill="Member/Casual",
        title="Lenght of ride taken by different rider types")
 
-
-
-## Group and visualize data by member_casual and rideable_type to determine prefered type of bike by riders
+## Group and visualize data to determine prefered type of bike by riders
 ride_type <- cleanridedata %>% group_by(member_casual, rideable_type) %>%
   count()
-
 ggplot(data=ride_type)+
   geom_col(mapping=aes(x=rideable_type, y=n, fill=member_casual))+
   facet_wrap(~member_casual)+
   labs(y="Number of rides", x="Type of bike", fill="Member/Casual",
        title="Most prefered type of bike by riders")
 
+# END
