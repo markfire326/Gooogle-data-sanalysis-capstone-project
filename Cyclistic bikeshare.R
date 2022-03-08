@@ -1,13 +1,13 @@
 ---
-  title: "Cyclistic Bike Share Analysis"
+title: "Cyclistic Bike Share Analysis"
 author: "George Ogala"
 date: "2/4/2022"
 output: html_document
 ---
 
+# STEP 1
 
-
-  ## Installing packages tht will aid our job delivery
+## Installing packages that will aid our job delivery
 
 install.packages("tidyverse")
 install.packages("lubridate")
@@ -30,10 +30,9 @@ library(readr)
 library(tidyr)
 library(ggplot2)
 
+# STEP 3
 
 ## Uploading 12 csv files for cleaning and analysis
-
-
 apr <- read_csv("C:/Users/gee/Desktop/bikeshare/202004-divvy-tripdata.csv")
 may <- read_csv("C:/Users/gee/Desktop/bikeshare/202005-divvy-tripdata.csv")
 jun <- read_csv("C:/Users/gee/Desktop/bikeshare/202006-divvy-tripdata.csv")
@@ -48,7 +47,7 @@ feb <- read_csv("C:/Users/gee/Desktop/bikeshare/202102-divvy-tripdata.csv")
 mar <- read_csv("C:/Users/gee/Desktop/bikeshare/202103-divvy-tripdata.csv")
 
 
-# STEP 2
+# STEP 3
 
 ## Converting and unifying datatype
 apr <-  mutate(apr, start_station_id = as.character(start_station_id)
@@ -116,17 +115,16 @@ mar <-  mutate(mar, start_station_id = as.character(start_station_id)
 
 ridedata <- bind_rows(apr,may,jun,jul,aug,sep,oct,nov,dec,jan,feb,mar)
 
-
 ## Inspect the combined data
 
 colnames(ridedata)
 str(ridedata)
 head(ridedata)
 
+# STEP 4
 
 ## Clean dataset by removing unnessesary colons
 ridedata <- ridedata %>% select(-c(start_station_id, end_station_id, start_lat, start_lng, end_lat, end_lng))
-
 
 ## Add date, month, day, and trip length colons
 ridedata$date <- as.Date(ridedata$started_at)
@@ -134,20 +132,20 @@ ridedata$month <- format(as.Date(ridedata$date), "%B")
 ridedata$day <- format(as.Date(ridedata$date), "%A")
 ridedata$trip_length <- difftime(ridedata$ended_at, ridedata$started_at)
 
-
 # More data cleaning of new colons
 
 ## remove empty rows, dataset trimmed down from3489748 rows to 3294691
 colSums(is.na(ridedata)) #returns a summary of empty colons on each variable
 cleanridedata <- ridedata [complete.cases(ridedata), ]
 
-
 ## Remove all negative and zero trip length as well as NA/null values
 cleanridedata <- subset(cleanridedata, trip_length>0)
 
-
 ## Convert ride length to integer
 cleanridedata$trip_length <- as.integer(cleanridedata$trip_length)
+
+
+# STEP 5
 
 
 # DESCRIPTIVE ANALYSIS
@@ -155,15 +153,15 @@ cleanridedata$trip_length <- as.integer(cleanridedata$trip_length)
 ## Aggregate data to determine average trip length of riders for each month of the year
 aggregate(trip_length ~ member_casual + month, cleanridedata, mean)
 
-
 ## Aggregate data to determine average trip length of riders on each day of the week
 aggregate(trip_length ~ day + member_casual, cleanridedata, mean)
-
 
 ## Aggregate data to determine how riders use the different bike types available
 aggregate(trip_length ~ rideable_type + member_casual, cleanridedata, mean)
 
 
+# STEP 6
+# VISUALIZATION
 ## Group and visualize data by rider type and monthly trip length
 mc_month <- cleanridedata %>% group_by(month, member_casual) %>%
   count()
