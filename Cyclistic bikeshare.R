@@ -147,7 +147,6 @@ cleanridedata$trip_length <- as.integer(cleanridedata$trip_length)
 
 # STEP 5
 
-
 # DESCRIPTIVE ANALYSIS
 
 ## Aggregate data to determine average trip length of riders for each month of the year
@@ -161,16 +160,6 @@ aggregate(trip_length ~ rideable_type + member_casual, cleanridedata, mean)
 
 
 # STEP 6
-# VISUALIZATION
-## Group and visualize data by rider type and monthly trip length
-mc_month <- cleanridedata %>% group_by(month, member_casual) %>%
-  count()
-ggplot(data=mc_month)+
-  geom_col(mapping=aes(x=month, y=n, fill=member_casual))+
-  facet_wrap(~member_casual)+
-  labs(y="Trip length", x="Rider type", fill="Member/Casual",
-       title="Ride length by month")+
-  theme(axis.text.x=element_text(angle=45))
 
 ## Group and visualize rider type by day of the week
 mc_week <- cleanridedata %>% group_by(day, member_casual) %>%
@@ -198,7 +187,7 @@ ggplot(data=trip_len)+
   labs(y="Trip length", x="Rider type", fill="Member/Casual",
        title="Lenght of ride taken by different rider types")
 
-## Group and visualize data to determine prefered type of bike by riders
+## Group and visualize data by member_casual and rideable_type to determine prefered type of bike by riders
 ride_type <- cleanridedata %>% group_by(member_casual, rideable_type) %>%
   count()
 ggplot(data=ride_type)+
@@ -206,5 +195,63 @@ ggplot(data=ride_type)+
   facet_wrap(~member_casual)+
   labs(y="Number of rides", x="Type of bike", fill="Member/Casual",
        title="Most prefered type of bike by riders")
+
+
+                            # TOP 10 STATIONS
+
+## Creat a new data frame for all stations
+all_stations <- bind_rows(data.frame("stations" = cleanridedata$start_station_name, 
+                                     "member_casual" = cleanridedata$member_casual),
+                          data.frame("stations" = cleanridedata$end_station_name,
+                                     "member_casual" = cleanridedata$member_casual))
+
+# Exclude entries with no station name
+all_stations_v2 <- all_stations[!(all_stations$stations == "" | is.na(all_stations$stations)),]
+
+# Separate the data frame by rider type
+all_stations_member <- all_stations_v2[all_stations_v2$member_casual == 'member',]
+all_stations_casual <- all_stations_v2[all_stations_v2$member_casual == 'casual',]
+
+
+# Get the top 10 popular stations all, members and casual riders
+top_10_station <- all_stations_v2 %>% 
+  group_by(stations) %>% 
+  summarise(station_count = n()) %>% 
+  arrange(desc(station_count)) %>% 
+  slice(1:10)
+
+## Viz
+ggplot(data=top_10_station)+
+  geom_col(mapping=aes(x=stations,y=station_count, fill=stations))+
+  labs(title="Top 10 stations", subtitle = "Most populous bike stations.")+
+  theme(axis.text = element_text(angle=45))
+
+# Get the top 10 popular stations for members
+top_10_stations_member <- all_stations_member %>% 
+  group_by(stations) %>% 
+  summarise(station_count = n()) %>% 
+  arrange(desc(station_count)) %>% 
+  head(n=10)
+
+## Viz
+ggplot(data=top_10_stations_member)+
+  geom_col(mapping=aes(x=stations,y=station_count, fill=stations))+
+  labs(title="Top 10 stations", subtitle = "Most populous bike stations amongst members.")+
+  theme(axis.text = element_text(angle=45))
+
+# Get the top 10 popular stations for members
+top_10_stations_casual <- all_stations_casual %>% 
+  group_by(stations) %>% 
+  summarise(station_count = n()) %>% 
+  arrange(desc(station_count)) %>% 
+  head(n=10)
+
+## Viz
+ggplot(data=top_10_stations_casual)+
+  geom_col(mapping=aes(x=stations,y=station_count, fill=stations))+
+  labs(title="Top 10 stations", subtitle = "Most populous bike stations amongst members.")+
+  theme(axis.text = element_text(angle=45))
+
+
 
 # END
