@@ -30,7 +30,7 @@ library(readr)
 library(tidyr)
 library(ggplot2)
 
-# STEP 3
+# STEP 2
 
 ## Uploading 12 csv files for cleaning and analysis
 apr <- read_csv("C:/Users/gee/Desktop/bikeshare/202004-divvy-tripdata.csv")
